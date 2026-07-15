@@ -1,0 +1,114 @@
+services:
+  bss-dev-db:
+    container_name: bss-dev-db
+    image: postgres:18.4
+    restart: always
+    ports:
+      - "5582:5432"
+    environment:
+      POSTGRES_USER: bss
+      POSTGRES_PASSWORD: bss
+      POSTGRES_DB: bss
+    volumes:
+      - bss-dev_db:/var/lib/postgresql
+#      - ./assets/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+    networks:
+      - bss-dev
+
+  # Link: http://127.0.0.1:8081
+  bss-dev-pgadmin:
+    container_name: bss-dev-pgadmin
+    image: dpage/pgadmin4:9.16
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: bss@bss.dev
+      PGADMIN_DEFAULT_USERNAME: bss
+      PGADMIN_DEFAULT_PASSWORD: bss
+      PGADMIN_CONFIG_WTF_CSRF_ENABLED: 'False'
+    volumes:
+      - bss-dev_pgadmin:/var/lib/pgadmin
+    networks:
+      - bss-dev
+      - bss-dev-authentik
+
+  authentik-postgresql:
+    container_name: authentik-postgresql
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_PASSWORD: authentik
+      POSTGRES_USER: authentik
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+        - CMD-SHELL
+        - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      timeout: 5s
+    image: docker.io/library/postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - bss-dev-authentik_database:/var/lib/postgresql/data
+    networks:
+      - bss-dev-authentik
+
+  # Link: http://127.0.0.1:9000
+  bss-dev-authentik-server:
+    container_name: bss-dev-authentik-server
+    command: server
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_SECRET_KEY: secret
+    image: authentik/server:2026.5.4
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    restart: unless-stopped
+    shm_size: 512mb
+    volumes:
+      - ./assets/data:/data
+      - ./assets/custom-templates:/templates
+    networks:
+      - bss-dev-authentik
+
+  bss-dev-authentik-worker:
+    container_name: bss-dev-authentik-worker
+    command: worker
+    depends_on:
+      authentik-postgresql:
+        condition: service_healthy
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_SECRET_KEY: secret
+    image: authentik/server:2026.5.4
+    restart: unless-stopped
+    shm_size: 512mb
+    user: root
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./assets/data:/data
+      - ./assets/certs:/certs
+      - ./assets/custom-templates:/templates
+    networks:
+      - bss-dev-authentik
+
+networks:
+    bss-dev:
+    bss-dev-authentik:
+
+volumes:
+  bss-dev_db:
+  bss-dev_pgadmin:
+  bss-dev-authentik_database:
+      driver: local
