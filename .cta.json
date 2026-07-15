@@ -1,5 +1,5 @@
 {
-  "projectName": "bss-web",
+  "projectName": "bss-stack",
   "mode": "file-router",
   "typescript": true,
   "packageManager": "pnpm",

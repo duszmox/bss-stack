@@ -1,5 +1,5 @@
 {
-  "name": "bss-web",
+  "name": "bss-stack",
   "private": true,
   "type": "module",
   "imports": {

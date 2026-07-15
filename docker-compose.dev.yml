@@ -33,8 +33,8 @@ services:
       - bss-dev
       - bss-dev-authentik
 
-  authentik-postgresql:
-    container_name: authentik-postgresql
+  bss-dev-authentik-postgresql:
+    container_name: bss-dev-authentik-postgresql
     environment:
       POSTGRES_DB: authentik
       POSTGRES_PASSWORD: authentik
@@ -59,10 +59,10 @@ services:
     container_name: bss-dev-authentik-server
     command: server
     depends_on:
-      authentik-postgresql:
+      bss-dev-authentik-postgresql:
         condition: service_healthy
     environment:
-      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__HOST: bss-dev-authentik-postgresql
       AUTHENTIK_POSTGRESQL__NAME: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: authentik
       AUTHENTIK_POSTGRESQL__USER: authentik
@@ -83,10 +83,10 @@ services:
     container_name: bss-dev-authentik-worker
     command: worker
     depends_on:
-      authentik-postgresql:
+      bss-dev-authentik-postgresql:
         condition: service_healthy
     environment:
-      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__HOST: bss-dev-authentik-postgresql
       AUTHENTIK_POSTGRESQL__NAME: authentik
       AUTHENTIK_POSTGRESQL__PASSWORD: authentik
       AUTHENTIK_POSTGRESQL__USER: authentik

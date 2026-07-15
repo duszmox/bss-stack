@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/bss-web.iml" filepath="$PROJECT_DIR$/.idea/bss-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/bss-stack.iml" filepath="$PROJECT_DIR$/.idea/bss-stack.iml" />
     </modules>
   </component>
 </project>
