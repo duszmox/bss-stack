@@ -1,9 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { useRef, useEffect } from 'react'
 
 import { usersTable } from '#/db/schema.ts'
 import { db } from '#/db/drizzleConnect.ts'
 import { Button } from '#/components/ui/button.tsx'
 import { createServerFn } from '@tanstack/react-start'
+import MiniVideo from '#/components/MiniVideo.tsx'
+import Card from "#/components/Card.tsx";
+import Videoplayer from "#/components/Videoplayer.tsx";
 
 const createUser = createServerFn({ method: 'POST' }).handler(async () => {
   const user: typeof usersTable.$inferInsert = {
@@ -20,92 +24,80 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
+
+    const handleWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault()
+        container.scrollLeft += e.deltaY
+      }
+    }
+
+    container.addEventListener('wheel', handleWheel, { passive: false })
+    return () => container.removeEventListener('wheel', handleWheel)
+  }, [])
+
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
-        </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
-          <Button
-            onClick={async () => {
-              await createUser()
-            }}
-          >
-            Click Me
-          </Button>
+    <main className="mx-auto w-[90dvw]">
+      <div
+        className={
+          'h-fit  overflow-hidden font-bank-gothic text-[clamp(1rem,10dvw,66px)] font-bold leading-none my-[5dvh] text-(--bss-text)'
+        }
+      >
+        Budavári Schönherz Studió
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-x-[3dvw] gap-y-[3dvh] mb-[10dvh]">
+        <div className="">
+          <div className={'text-(--orange) font-bold text-4xl mb-[3dvh]'}>
+            Kiemelt video / adas neve
+          </div>
+          <Videoplayer />
         </div>
-      </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
-      </section>
+        <div>
+          <div className="text-(--orange) font-bold text-4xl mb-[3dvh]">
+            Tovabbi friss videoink
+          </div>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-[3dvw] gap-y-[3dvh]">
+            <MiniVideo />
+            <MiniVideo />
+            <MiniVideo />
+            <MiniVideo />
+            <MiniVideo />
+            <MiniVideo />
+          </div>
+        </div>
+      </div>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
-      </section>
+      <div className="mb-[10dvh] ">
+        <div className={'text-(--orange) font-bold text-4xl mb-[2dvh]'}>
+          Legutobbi esemenyek
+        </div>
+        <div
+          className={
+            'flex flex-nowrap overflow-x-auto gap-[1dvw] *:shrink-0 scrollbar-hide'
+          }
+          ref={scrollContainerRef}
+        >
+          <MiniVideo />
+          <MiniVideo />
+          <MiniVideo />
+          <MiniVideo />
+          <MiniVideo />
+          <MiniVideo />
+        </div>
+      </div>
+
+      <div className={"grid grid-cols-1 md:grid-cols-2 gap-y-[2dvh] gap-x-[3dvw] p-x-[3dvw] mb-[2dvh]"}>
+          <Card />
+          <Card />
+          <Card />
+          <Card />
+      </div>
     </main>
   )
 }

@@ -9,10 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VideosIndexRouteImport } from './routes/videos/index'
+import { Route as MembersIndexRouteImport } from './routes/members/index'
+import { Route as EventsIndexRouteImport } from './routes/events/index'
+import { Route as VideosVideoIdRouteImport } from './routes/videos/$videoId'
+import { Route as MembersMemberIdRouteImport } from './routes/members/$memberId'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -21,6 +32,31 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideosIndexRoute = VideosIndexRouteImport.update({
+  id: '/videos/',
+  path: '/videos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersIndexRoute = MembersIndexRouteImport.update({
+  id: '/members/',
+  path: '/members/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsIndexRoute = EventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideosVideoIdRoute = VideosVideoIdRouteImport.update({
+  id: '/videos/$videoId',
+  path: '/videos/$videoId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersMemberIdRoute = MembersMemberIdRouteImport.update({
+  id: '/members/$memberId',
+  path: '/members/$memberId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
@@ -32,35 +68,94 @@ const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/courses': typeof CoursesRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/videos/$videoId': typeof VideosVideoIdRoute
+  '/events/': typeof EventsIndexRoute
+  '/members/': typeof MembersIndexRoute
+  '/videos/': typeof VideosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/courses': typeof CoursesRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/videos/$videoId': typeof VideosVideoIdRoute
+  '/events': typeof EventsIndexRoute
+  '/members': typeof MembersIndexRoute
+  '/videos': typeof VideosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/courses': typeof CoursesRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/members/$memberId': typeof MembersMemberIdRoute
+  '/videos/$videoId': typeof VideosVideoIdRoute
+  '/events/': typeof EventsIndexRoute
+  '/members/': typeof MembersIndexRoute
+  '/videos/': typeof VideosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/demo/tanstack-query'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/courses'
+    | '/demo/tanstack-query'
+    | '/members/$memberId'
+    | '/videos/$videoId'
+    | '/events/'
+    | '/members/'
+    | '/videos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/about' | '/demo/tanstack-query'
+  to:
+    | '/'
+    | '/about'
+    | '/courses'
+    | '/demo/tanstack-query'
+    | '/members/$memberId'
+    | '/videos/$videoId'
+    | '/events'
+    | '/members'
+    | '/videos'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/courses'
+    | '/demo/tanstack-query'
+    | '/members/$memberId'
+    | '/videos/$videoId'
+    | '/events/'
+    | '/members/'
+    | '/videos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  CoursesRoute: typeof CoursesRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
+  MembersMemberIdRoute: typeof MembersMemberIdRoute
+  VideosVideoIdRoute: typeof VideosVideoIdRoute
+  EventsIndexRoute: typeof EventsIndexRoute
+  MembersIndexRoute: typeof MembersIndexRoute
+  VideosIndexRoute: typeof VideosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -73,6 +168,41 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/videos/': {
+      id: '/videos/'
+      path: '/videos'
+      fullPath: '/videos/'
+      preLoaderRoute: typeof VideosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members/': {
+      id: '/members/'
+      path: '/members'
+      fullPath: '/members/'
+      preLoaderRoute: typeof MembersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/': {
+      id: '/events/'
+      path: '/events'
+      fullPath: '/events/'
+      preLoaderRoute: typeof EventsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/videos/$videoId': {
+      id: '/videos/$videoId'
+      path: '/videos/$videoId'
+      fullPath: '/videos/$videoId'
+      preLoaderRoute: typeof VideosVideoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/members/$memberId': {
+      id: '/members/$memberId'
+      path: '/members/$memberId'
+      fullPath: '/members/$memberId'
+      preLoaderRoute: typeof MembersMemberIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
@@ -88,7 +218,13 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  CoursesRoute: CoursesRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
+  MembersMemberIdRoute: MembersMemberIdRoute,
+  VideosVideoIdRoute: VideosVideoIdRoute,
+  EventsIndexRoute: EventsIndexRoute,
+  MembersIndexRoute: MembersIndexRoute,
+  VideosIndexRoute: VideosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
